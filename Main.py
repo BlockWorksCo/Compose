@@ -13,17 +13,63 @@ import os
 
 
 
+class VT100FrontEnd:
+    """
+    """
+
+    def __init__(self):
+        """
+        """
+        pass
+
+
+    def Clear(self):
+        """
+        """
+        sys.stdout.write('\033[2J')
+        sys.stdout.write('\033[H')
+
+
+
+    def SetCursorPosition(self, x,y):
+        """
+        """
+        #sys.stdout.write( '\033[%d;%dH'%(y+1,x+1) )
+
+
+    def ShowEditingContext(self, context):
+        """
+        """
+        self.Clear()
+
+        lineNumber  = 0
+        for line in context.lines:
+
+            self.SetCursorPosition( 3,lineNumber )
+            print(line)
+            lineNumber  = lineNumber + 1
+
+
+
+
+
+
+
+
 class EditingContext:
     """
     Cursor position
     """
 
-    def __init__(self, backEnd,  x,y, numberOfLines ):
+    def __init__(self, backEnd, frontEnd,  x,y, numberOfLines ):
         """
         """
-        self.x              = x
-        self.y              = y
+        self.x              = 0
+        self.y              = 0
+        self.linesX         = x
+        self.linesY         = y
         self.backEnd        = backEnd
+        self.frontEnd       = frontEnd
         self.numberOfLines  = numberOfLines        
 
         self.Update()
@@ -32,23 +78,20 @@ class EditingContext:
     def Update(self):
         """
         """
-        self.lines = backEnd.GetLinesBetween( self.y,self.y+self.numberOfLines ) 
+        self.lines = backEnd.GetLinesBetween( self.linesY, self.linesY+self.numberOfLines ) 
 
 
     def Display(self):
         """
         """
-
-        i = 0
-        for line in self.lines:
-            print( '%06d  %s'%(i+self.y,line) )
-            i = i+1
+        self.frontEnd.ShowEditingContext(self)
+        self.frontEnd.SetCursorPosition( self.x, self.y )
 
 
     def Save(self):
         """
         """
-        backEnd.ReplaceLines( self.y,self.y+self.numberOfLines, self.lines )
+        backEnd.ReplaceLines( self.linesY, self.linesY+self.numberOfLines, self.lines )
 
 
 
@@ -142,7 +185,7 @@ class BackEnd:
         #
         skip    = 0
         count   = startOffset
-        print(['dd','if='+self.fileName,'of='+newFile,'ibs=%d'%count,'obs=%d'%count,'skip=0','count=1'])
+        #print(['dd','if='+self.fileName,'of='+newFile,'ibs=%d'%count,'obs=%d'%count,'skip=0','count=1'])
         subprocess.check_output( ['dd','if='+self.fileName,'of='+newFile,'ibs=%d'%count,'obs=%d'%count,'skip=0','count=1'] )
 
         #
@@ -167,7 +210,7 @@ class BackEnd:
         skip        = endOffset
         count       = self.offsetForLine[-1] - endOffset
         cmd         = 'tail --bytes=+%d %s >> %s'%(endOffset,self.fileName, newFile) 
-        print(cmd)
+        #print(cmd)
         os.system(cmd)
         #cmd         = ['tail','--bytes=%d'count]
         #print(cmd)
@@ -180,7 +223,8 @@ if __name__ == "__main__":
     """
     print('NiceText :o)')
     backEnd     = BackEnd( sys.argv[1] )
-    context1    = EditingContext( backEnd, 0,100000, 10 )
+    frontEnd    = VT100FrontEnd()
+    context1    = EditingContext( backEnd, frontEnd ,0,100000, 10 )
 
     context1.Display()
     context1.Update()

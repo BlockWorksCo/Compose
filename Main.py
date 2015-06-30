@@ -32,15 +32,15 @@ class VT100FrontEnd:
     def Clear(self):
         """
         """
-        #sys.stdout.write('\033[2J')
-        #sys.stdout.write('\033[H')
+        sys.stdout.write('\033[2J')
+        sys.stdout.write('\033[H')
 
 
 
     def SetCursorPosition(self, x,y):
         """
         """
-        #sys.stdout.write( '\033[%d;%dH'%(y+1,x+1) )
+        sys.stdout.write( '\033[%d;%dH'%(y+1,x+1) )
 
 
     def ShowEditingContext(self, context):
@@ -78,6 +78,15 @@ class VT100FrontEnd:
         return rows,columns
 
 
+    def GetUserInput(self):
+        """
+        """
+        key     = ord(sys.stdin.read(1))
+        self.SetCursorPosition(0, self.rows-1)
+        sys.stdout.write('> %02x  '%(key) )
+
+        if key == 0x1b:
+            sys.exit(0)
 
 
 
@@ -255,9 +264,11 @@ if __name__ == "__main__":
 
     context1.Display()
     context1.Update()
-    context1.lines[0] = 'X'+context1.lines[0]
-    context1.lines[9] = 'X'+context1.lines[9]
-    context1.Save()
+    #context1.lines[0] = 'X'+context1.lines[0]
+    #context1.lines[9] = 'X'+context1.lines[9]
+    #context1.Save()
+    while True:
+        frontEnd.GetUserInput()
 
 
 

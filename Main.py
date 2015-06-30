@@ -9,7 +9,9 @@ import sys
 import re
 import subprocess
 import os
-
+import termios
+import tty
+import re
 
 
 
@@ -20,14 +22,18 @@ class VT100FrontEnd:
     def __init__(self):
         """
         """
-        pass
+        tty.setraw( sys.stdin.fileno() )
+
+        r,c     = self.GetScreenSize()
+        self.rows       = r
+        self.columns    = c
 
 
     def Clear(self):
         """
         """
-        sys.stdout.write('\033[2J')
-        sys.stdout.write('\033[H')
+        #sys.stdout.write('\033[2J')
+        #sys.stdout.write('\033[H')
 
 
 
@@ -49,6 +55,27 @@ class VT100FrontEnd:
             print(line)
             lineNumber  = lineNumber + 1
 
+
+    def GetScreenSize(self):
+        """
+        """        
+        sys.stdout.write('\033[19t')
+        #sys.stdout.flush()
+
+        byte    = ''
+        result  = ''
+
+        while byte != 't':
+            byte    = sys.stdin.read(1)
+            print('-%s-'%result)
+            result  = result + byte
+
+
+        rowsText,columnsText    = re.compile('9;([0-9]+);([0-9]+)').findall(result)[0]
+        rows    = int(rowsText)
+        columns = int(columnsText)
+
+        return rows,columns
 
 
 

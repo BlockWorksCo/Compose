@@ -18,13 +18,37 @@ class EditingContext:
     Cursor position
     """
 
-    def __init__(self, backEnd,  x,y ):
+    def __init__(self, backEnd,  x,y, numberOfLines ):
         """
         """
-        self.x          = x
-        self.y          = y
-        self.backEnd    = backEnd
+        self.x              = x
+        self.y              = y
+        self.backEnd        = backEnd
+        self.numberOfLines  = numberOfLines        
 
+        self.Update()
+
+
+    def Update(self):
+        """
+        """
+        self.lines = backEnd.GetLinesBetween( self.y,self.y+self.numberOfLines ) 
+
+
+    def Display(self):
+        """
+        """
+
+        i = 0
+        for line in self.lines:
+            print( '%06d  %s'%(i+self.y,line) )
+            i = i+1
+
+
+    def Save(self):
+        """
+        """
+        backEnd.ReplaceLines( self.y,self.y+self.numberOfLines, self.lines )
 
 
 
@@ -104,6 +128,50 @@ class BackEnd:
 
 
 
+    def ReplaceLines(self, start,end, lines ):
+        """
+        """
+        offsets     = backEnd.GetByteOffsetsOfLines( start,end+1 )
+        startOffset = offsets[0]
+        endOffset   = offsets[-1]
+        newFile     = self.fileName + '.new'
+
+        #
+        # Write the pre-start block
+        # dd if=big.txt of=big.txt.new count=1 obs=5302843 skip=0 ibs=5302843
+        #
+        skip    = 0
+        count   = startOffset
+        print(['dd','if='+self.fileName,'of='+newFile,'ibs=%d'%count,'obs=%d'%count,'skip=0','count=1'])
+        subprocess.check_output( ['dd','if='+self.fileName,'of='+newFile,'ibs=%d'%count,'obs=%d'%count,'skip=0','count=1'] )
+
+        #
+        # Write the replaced lines.
+        #
+        #outFile     = open(newFile, 'a+')
+        #outFile.seek( startOffset )
+        #for lineNumber in range(len(offsets)-1):
+
+        #    offset      = offsets[lineNumber]
+        #    lineLength  = offsets[lineNumber+1] - offset
+
+        #    outFile.write( lines[lineNumber]+'\n' )
+
+        #fileLength  = outFile.tell()
+        #outFile.close()
+
+        #
+        # Write the post-end block.
+        #
+        fileLength  = os.stat(newFile).st_size
+        skip        = endOffset
+        count       = self.offsetForLine[-1] - endOffset
+        cmd         = 'tail --bytes=+%d %s >> %s'%(endOffset,self.fileName, newFile) 
+        print(cmd)
+        os.system(cmd)
+        #cmd         = ['tail','--bytes=%d'count]
+        #print(cmd)
+        #subprocess.check_output( cmd )
 
 
 
@@ -112,18 +180,12 @@ if __name__ == "__main__":
     """
     print('NiceText :o)')
     backEnd     = BackEnd( sys.argv[1] )
-    context1    = EditingContext( backEnd, 0,0 )
+    context1    = EditingContext( backEnd, 0,100000, 10 )
 
-    #for line in backEnd.GetLinesBetween( 100000,100005 ):
-    #print(backEnd.GetByteOffsetsOfLines( 100000,100005 ))
-    i = 0
-    for line in backEnd.GetLinesBetween( 100000,100005 ):
-        print( '%05d) %s'%(i,line) )
-        i = i+1
-
-
-
-
+    context1.Display()
+    context1.Update()
+    #context1.lines[0] = 'X'
+    context1.Save()
 
 
 

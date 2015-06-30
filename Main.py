@@ -186,7 +186,7 @@ class BackEnd:
         skip    = 0
         count   = startOffset
         #print(['dd','if='+self.fileName,'of='+newFile,'ibs=%d'%count,'obs=%d'%count,'skip=0','count=1'])
-        subprocess.check_output( ['dd','if='+self.fileName,'of='+newFile,'ibs=%d'%count,'obs=%d'%count,'skip=0','count=1'] )
+        subprocess.check_output( ['dd','if='+self.fileName,'of='+newFile,'ibs=%d'%count,'obs=%d'%count,'skip=0','count=1'] , stderr=subprocess.PIPE )
 
         #
         # Write the replaced lines.
@@ -211,7 +211,7 @@ class BackEnd:
         count       = self.offsetForLine[-1] - endOffset
         cmd         = 'tail --bytes=+%d %s >> %s'%(endOffset,self.fileName, newFile) 
         #print(cmd)
-        os.system(cmd)
+        output      = subprocess.check_output(cmd, shell=True, stderr=subprocess.PIPE )
         #cmd         = ['tail','--bytes=%d'count]
         #print(cmd)
         #subprocess.check_output( cmd )

@@ -148,17 +148,17 @@ class BackEnd:
         #
         # Write the replaced lines.
         #
-        #outFile     = open(newFile, 'a+')
-        #outFile.seek( startOffset )
-        #for lineNumber in range(len(offsets)-1):
+        outFile     = open(newFile, 'a+')
+        outFile.seek( startOffset )
+        for lineNumber in range(len(offsets)-1):
 
-        #    offset      = offsets[lineNumber]
-        #    lineLength  = offsets[lineNumber+1] - offset
+            offset      = offsets[lineNumber]
+            lineLength  = offsets[lineNumber+1] - offset
 
-        #    outFile.write( lines[lineNumber]+'\n' )
+            outFile.write( lines[lineNumber]+'\n' )
 
-        #fileLength  = outFile.tell()
-        #outFile.close()
+        fileLength  = outFile.tell()
+        outFile.close()
 
         #
         # Write the post-end block.
@@ -184,7 +184,8 @@ if __name__ == "__main__":
 
     context1.Display()
     context1.Update()
-    #context1.lines[0] = 'X'
+    context1.lines[0] = 'X'+context1.lines[0]
+    context1.lines[9] = 'X'+context1.lines[9]
     context1.Save()
 
 

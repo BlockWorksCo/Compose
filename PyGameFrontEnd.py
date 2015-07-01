@@ -19,8 +19,14 @@ class PyGameFrontEnd:
         """
         pygame.init()
 
-        self.width      = 500
-        self.height     = 300
+        self.width          = 500
+        self.height         = 300
+        self.textColour     = (255,255,255)
+        #self.fontName       = "Comic Sans MS"
+        self.fontName       = 'Calibri'
+        self.fontSize       = 20
+        self.lines          = []
+
         self.screen = pygame.display.set_mode( (self.width,self.height), pygame.RESIZABLE )
 
         self.Display()
@@ -44,13 +50,9 @@ class PyGameFrontEnd:
         """
         """
         self.Clear()
+        self.lines  = context.lines
 
-        lineNumber  = 0
-        for line in context.lines:
-
-            self.SetCursorPosition( 3,lineNumber )
-            print(line)
-            lineNumber  = lineNumber + 1
+        self.Display()
 
 
     def GetScreenSize(self):
@@ -75,9 +77,20 @@ class PyGameFrontEnd:
     def Display( self ):
         """
         """
-        myfont = pygame.font.SysFont("Comic Sans MS", 30)
-        label   = myfont.render("Some text!", 1, (255,255,0))
-        self.screen.blit( label, (100, 100))
+        myfont = pygame.font.SysFont( self.fontName, self.fontSize )
+        #label   = myfont.render( "Some text!", 1, self.textColour )
+        #self.screen.blit( label, (100, 100))
+
+
+        lineNumber  = 0
+        lineHeight  = self.fontSize
+        for line in self.lines:
+
+            lineText   = myfont.render( line, 1, self.textColour )
+            self.screen.blit( lineText, (10, lineNumber*lineHeight))
+
+            lineNumber  = lineNumber + 1
+
 
         pygame.display.set_caption("NiceText :o)")
         pygame.display.flip()

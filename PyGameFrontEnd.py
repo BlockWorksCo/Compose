@@ -5,6 +5,9 @@
 # Written by Steve Tickle <Steve@BlockWorks.co>, June 2015.
 #
 
+
+
+import time
 import sys
 import pygame
 
@@ -19,13 +22,20 @@ class PyGameFrontEnd:
         """
         pygame.init()
 
-        self.width          = 500
-        self.height         = 300
-        self.textColour     = (255,255,255)
-        #self.fontName       = "Comic Sans MS"
-        self.fontName       = 'Calibri'
-        self.fontSize       = 20
-        self.lines          = []
+        self.width                  = 500
+        self.height                 = 300
+        self.textBackgroundColour   = (0x27,0x28,0x22)
+        self.textColour             = (0xf8,0xf8,0xf2)
+        #self.fontName              = "Comic Sans MS"
+        #self.fontName              = 'Calibri'
+        self.fontName               = 'Consolas'
+        self.fontSize               = 14
+        self.lines                  = []
+        self.cursorX                = 20
+        self.cursorY                = 20
+        self.cursorColour           = (0xff,0xff,0xff)
+        self.lastIdleTimestamp      = 0
+        self.cursorState            = 0
 
         self.screen = pygame.display.set_mode( (self.width,self.height), pygame.RESIZABLE )
 
@@ -96,11 +106,41 @@ class PyGameFrontEnd:
         pygame.display.flip()
 
 
+    def Idle(self):
+        """
+        """
+
+        deltaTimestamp   = self.timestamp - self.lastIdleTimestamp
+
+        if deltaTimestamp >= 200:
+
+            cursorRect  = pygame.Rect([self.cursorX,self.cursorY],[10,self.fontSize])
+            cursorRect  = pygame.Rect([10,10],[10,self.fontSize])
+
+            if self.cursorState == 0:
+                pygame.draw.rect( self.screen, self.textBackgroundColour, cursorRect, 0)
+                print('tick')
+                self.cursorState = 1
+
+            elif self.cursorState == 1:
+                pygame.draw.rect( self.screen, self.cursorColour, cursorRect, 0)
+                print('tock')
+                self.cursorState = 0
+
+            self.lastIdleTimestamp  = self.timestamp
+            pygame.display.flip()
+
+        time.sleep(0.05)
+
+
+
     def GetUserInput(self):
         """
         """
         pygame.event.pump()
-        event   = pygame.event.wait()
+        event           = pygame.event.poll()
+        self.timestamp  = pygame.time.get_ticks()
+
 
         if event.type == pygame.QUIT: 
             pygame.display.quit()
@@ -114,4 +154,6 @@ class PyGameFrontEnd:
 
             self.Display()
 
+        elif event.type == pygame.NOEVENT:
+            self.Idle()
 

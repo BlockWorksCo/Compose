@@ -11,7 +11,8 @@ import subprocess
 import os
 import re
 #import VT100FrontEnd
-import SimpleFrontEnd
+#import SimpleFrontEnd
+import PyGameFrontEnd
 
 
 
@@ -72,6 +73,7 @@ class BackEnd:
         """
         self.fileName           = fileName
         self.indexTimestamp     = None
+        self.lineEnding         = None
 
 
     def GetLinesBetween( self, start, end ):
@@ -132,6 +134,15 @@ class BackEnd:
 
 
 
+    def LineEndingType(self):
+        """
+        """
+        if self.lineEnding == None:
+            self.lineEnding     = '\n'
+
+        return self.lineEnding
+
+
     def ReplaceLines(self, start,end, lines ):
         """
         """
@@ -159,7 +170,7 @@ class BackEnd:
             offset      = offsets[lineNumber]
             lineLength  = offsets[lineNumber+1] - offset
 
-            outFile.write( lines[lineNumber]+os.linesep )
+            outFile.write( lines[lineNumber]+self.LineEndingType() )
 
         fileLength  = outFile.tell()
         outFile.close()
@@ -185,7 +196,8 @@ if __name__ == "__main__":
     print('NiceText :o)')
     backEnd     = BackEnd( sys.argv[1] )
     #frontEnd    = VT100FrontEnd.VT100FrontEnd()
-    frontEnd    = SimpleFrontEnd.SimpleFrontEnd()
+    #frontEnd    = SimpleFrontEnd.SimpleFrontEnd()
+    frontEnd    = PyGameFrontEnd.PyGameFrontEnd()
     context1    = EditingContext( backEnd, frontEnd ,0,100000, 10 )
 
     context1.Display()

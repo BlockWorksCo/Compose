@@ -9,84 +9,9 @@ import sys
 import re
 import subprocess
 import os
-import termios
-import tty
 import re
-
-
-
-class VT100FrontEnd:
-    """
-    """
-
-    def __init__(self):
-        """
-        """
-        tty.setraw( sys.stdin.fileno() )
-
-        r,c     = self.GetScreenSize()
-        self.rows       = r
-        self.columns    = c
-
-
-    def Clear(self):
-        """
-        """
-        sys.stdout.write('\033[2J')
-        sys.stdout.write('\033[H')
-
-
-
-    def SetCursorPosition(self, x,y):
-        """
-        """
-        sys.stdout.write( '\033[%d;%dH'%(y+1,x+1) )
-
-
-    def ShowEditingContext(self, context):
-        """
-        """
-        self.Clear()
-
-        lineNumber  = 0
-        for line in context.lines:
-
-            self.SetCursorPosition( 3,lineNumber )
-            print(line)
-            lineNumber  = lineNumber + 1
-
-
-    def GetScreenSize(self):
-        """
-        """        
-        sys.stdout.write('\033[19t')
-        #sys.stdout.flush()
-
-        byte    = ''
-        result  = ''
-
-        while byte != 't':
-            byte    = sys.stdin.read(1)
-            print('-%s-'%result)
-            result  = result + byte
-
-
-        rowsText,columnsText    = re.compile('9;([0-9]+);([0-9]+)').findall(result)[0]
-        rows    = int(rowsText)
-        columns = int(columnsText)
-
-        return rows,columns
-
-
-    def GetUserInput(self):
-        """
-        """
-        key     = ord(sys.stdin.read(1))
-        self.SetCursorPosition(0, self.rows-1)
-        sys.stdout.write('> %02x  '%(key) )
-
-        if key == 0x1b:
-            sys.exit(0)
+#import VT100FrontEnd
+import SimpleFrontEnd
 
 
 
@@ -234,7 +159,7 @@ class BackEnd:
             offset      = offsets[lineNumber]
             lineLength  = offsets[lineNumber+1] - offset
 
-            outFile.write( lines[lineNumber]+'\n' )
+            outFile.write( lines[lineNumber]+os.linesep )
 
         fileLength  = outFile.tell()
         outFile.close()
@@ -259,16 +184,17 @@ if __name__ == "__main__":
     """
     print('NiceText :o)')
     backEnd     = BackEnd( sys.argv[1] )
-    frontEnd    = VT100FrontEnd()
+    #frontEnd    = VT100FrontEnd.VT100FrontEnd()
+    frontEnd    = SimpleFrontEnd.SimpleFrontEnd()
     context1    = EditingContext( backEnd, frontEnd ,0,100000, 10 )
 
     context1.Display()
     context1.Update()
-    #context1.lines[0] = 'X'+context1.lines[0]
-    #context1.lines[9] = 'X'+context1.lines[9]
-    #context1.Save()
-    while True:
-        frontEnd.GetUserInput()
+    context1.lines[0] = 'X'+context1.lines[0]
+    context1.lines[9] = 'X'+context1.lines[9]
+    context1.Save()
+    #while True:
+    #    frontEnd.GetUserInput()
 
 
 

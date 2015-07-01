@@ -6,7 +6,7 @@
 #
 
 import sys
-import subprocess
+import pygame
 
 
 
@@ -17,7 +17,14 @@ class PyGameFrontEnd:
     def __init__(self):
         """
         """
-        pass
+        pygame.init()
+
+        self.width      = 500
+        self.height     = 300
+        self.screen = pygame.display.set_mode( (self.width,self.height), pygame.RESIZABLE )
+
+        self.Display()
+
 
 
     def Clear(self):
@@ -49,8 +56,6 @@ class PyGameFrontEnd:
     def GetScreenSize(self):
         """
         """        
-        sys.stdout.write('\033[19t')
-
         byte    = ''
         result  = ''
 
@@ -67,14 +72,33 @@ class PyGameFrontEnd:
         return rows,columns
 
 
+    def Display( self ):
+        """
+        """
+        myfont = pygame.font.SysFont("Comic Sans MS", 30)
+        label   = myfont.render("Some text!", 1, (255,255,0))
+        self.screen.blit( label, (100, 100))
+
+        pygame.display.set_caption("NiceText :o)")
+        pygame.display.flip()
+
+
     def GetUserInput(self):
         """
         """
-        key     = ord(sys.stdin.read(1))
-        self.SetCursorPosition(0, self.rows-1)
-        sys.stdout.write('> %02x  '%(key) )
+        pygame.event.pump()
+        event   = pygame.event.wait()
 
-        if key == 0x1b:
-            sys.exit(0)
+        if event.type == pygame.QUIT: 
+            pygame.display.quit()
+
+        elif event.type == pygame.VIDEORESIZE:
+
+            width,height    = event.dict['size']
+            self.width      = width
+            self.height     = height
+            self.screen = pygame.display.set_mode( (self.width,self.height), pygame.RESIZABLE )
+
+            self.Display()
 
 

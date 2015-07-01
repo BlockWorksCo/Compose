@@ -202,11 +202,11 @@ if __name__ == "__main__":
 
     context1.Display()
     context1.Update()
-    context1.lines[0] = 'X'+context1.lines[0]
-    context1.lines[9] = 'X'+context1.lines[9]
-    context1.Save()
-    #while True:
-    #    frontEnd.GetUserInput()
+    #context1.lines[0] = 'X'+context1.lines[0]
+    #context1.lines[9] = 'X'+context1.lines[9]
+    #context1.Save()
+    while True:
+        frontEnd.GetUserInput()
 
 
 

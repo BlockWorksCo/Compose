@@ -197,7 +197,7 @@ if __name__ == "__main__":
     backEnd     = BackEnd( sys.argv[1] )
     #frontEnd    = VT100FrontEnd.VT100FrontEnd()
     #frontEnd    = SimpleFrontEnd.SimpleFrontEnd()
-    frontEnd    = PyGameFrontEnd.PyGameFrontEnd()
+    frontEnd    = PyGameFrontEnd.PyGameFrontEnd( backEnd )
     context1    = EditingContext( backEnd, frontEnd ,0,100000, 10 )
 
     context1.Display()

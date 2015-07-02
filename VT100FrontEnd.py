@@ -18,9 +18,12 @@ class VT100FrontEnd:
     """
     """
 
-    def __init__(self):
+    def __init__(self, context):
         """
         """
+
+        self.context                = context
+
         tty.setraw( sys.stdin.fileno() )
 
         r,c     = self.GetScreenSize()

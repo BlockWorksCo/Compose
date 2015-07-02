@@ -17,11 +17,12 @@ class PyGameFrontEnd:
     """
     """
 
-    def __init__(self):
+    def __init__(self, backEnd):
         """
         """
         pygame.init()
 
+        self.backEnd                = backEnd
         self.width                  = 1000
         self.height                 = 600
         self.textBackgroundColour   = (0x27,0x28,0x22)
@@ -30,7 +31,7 @@ class PyGameFrontEnd:
         #self.fontName              = 'Calibri'
         #self.fontName               = 'Consolas'
         self.fontName               = 'Emilbus Mono'
-        self.fontSize               = 18
+        self.fontSize               = 20
         self.font                   = pygame.font.SysFont( self.fontName, self.fontSize )
         cw,ch                       = self.font.size(' ')
         self.lines                  = []
@@ -99,9 +100,11 @@ class PyGameFrontEnd:
         #self.screen.blit( label, (100, 100))
 
 
+        lines   = self.backEnd.GetLinesBetween(0,100)
+
         lineNumber  = 0
         lineHeight  = self.fontSize
-        for line in self.lines:
+        for line in lines:
 
             lineText   = self.font.render( line, 1, self.textColour )
             self.screen.blit( lineText, (10, lineNumber*lineHeight))
@@ -160,4 +163,24 @@ class PyGameFrontEnd:
 
         elif event.type == pygame.NOEVENT:
             self.Idle()
+
+
+        keys    = pygame.key.get_pressed()
+        if keys[pygame.K_UP]:
+            print('K_UP')
+            self.cursorY = self.cursorY - 1
+
+        if keys[pygame.K_DOWN]:
+            print('K_DOWN')
+            self.cursorY = self.cursorY + 1
+            
+        if keys[pygame.K_LEFT]:
+            print('K_LEFT')
+            self.cursorX = self.cursorX - 1
+            
+        if keys[pygame.K_RIGHT]:
+            print('K_RIGHT')
+            self.cursorX = self.cursorX + 1
+            
+
 

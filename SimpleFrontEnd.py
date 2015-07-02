@@ -14,10 +14,10 @@ class SimpleFrontEnd:
     """
     """
 
-    def __init__(self):
+    def __init__(self, context):
         """
         """
-        pass
+        self.context                = context
 
 
     def Clear(self):

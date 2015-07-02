@@ -22,20 +22,28 @@ class PyGameFrontEnd:
         """
         pygame.init()
 
-        self.width                  = 500
-        self.height                 = 300
+        self.width                  = 1000
+        self.height                 = 600
         self.textBackgroundColour   = (0x27,0x28,0x22)
         self.textColour             = (0xf8,0xf8,0xf2)
         #self.fontName              = "Comic Sans MS"
         #self.fontName              = 'Calibri'
-        self.fontName               = 'Consolas'
-        self.fontSize               = 14
+        #self.fontName               = 'Consolas'
+        self.fontName               = 'Emilbus Mono'
+        self.fontSize               = 18
+        self.font                   = pygame.font.SysFont( self.fontName, self.fontSize )
+        cw,ch                       = self.font.size(' ')
         self.lines                  = []
-        self.cursorX                = 20
-        self.cursorY                = 20
+        self.cursorX                = 0
+        self.cursorY                = 0
         self.cursorColour           = (0xff,0xff,0xff)
         self.lastIdleTimestamp      = 0
         self.cursorState            = 0
+        self.characterWidth         = cw
+        self.characterHeight        = ch
+        self.frameBufferWidth       = self.width / self.characterWidth
+        self.frameBufferHeight      = self.height / self.characterHeight
+        self.frameBuffer            = ' ' * self.frameBufferWidth * self.frameBufferHeight;
 
         self.screen = pygame.display.set_mode( (self.width,self.height), pygame.RESIZABLE )
 
@@ -87,7 +95,6 @@ class PyGameFrontEnd:
     def Display( self ):
         """
         """
-        myfont = pygame.font.SysFont( self.fontName, self.fontSize )
         #label   = myfont.render( "Some text!", 1, self.textColour )
         #self.screen.blit( label, (100, 100))
 
@@ -96,14 +103,14 @@ class PyGameFrontEnd:
         lineHeight  = self.fontSize
         for line in self.lines:
 
-            lineText   = myfont.render( line, 1, self.textColour )
+            lineText   = self.font.render( line, 1, self.textColour )
             self.screen.blit( lineText, (10, lineNumber*lineHeight))
 
             lineNumber  = lineNumber + 1
 
-
         pygame.display.set_caption("NiceText :o)")
         pygame.display.flip()
+
 
 
     def Idle(self):
@@ -114,17 +121,14 @@ class PyGameFrontEnd:
 
         if deltaTimestamp >= 200:
 
-            cursorRect  = pygame.Rect([self.cursorX,self.cursorY],[10,self.fontSize])
-            cursorRect  = pygame.Rect([10,10],[10,self.fontSize])
+            cursorRect  = pygame.Rect([self.cursorX*self.characterWidth,self.cursorY*self.characterHeight],[self.characterWidth,self.characterHeight])
 
             if self.cursorState == 0:
                 pygame.draw.rect( self.screen, self.textBackgroundColour, cursorRect, 0)
-                print('tick')
                 self.cursorState = 1
 
             elif self.cursorState == 1:
                 pygame.draw.rect( self.screen, self.cursorColour, cursorRect, 0)
-                print('tock')
                 self.cursorState = 0
 
             self.lastIdleTimestamp  = self.timestamp

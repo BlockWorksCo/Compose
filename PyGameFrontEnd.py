@@ -44,6 +44,7 @@ class PyGameFrontEnd:
         self.characterHeight        = ch
         self.frameBufferWidth       = self.width / self.characterWidth
         self.frameBufferHeight      = self.height / self.characterHeight
+        self.frameBufferStart       = 0
         self.frameBuffer            = ' ' * self.frameBufferWidth * self.frameBufferHeight;
 
         self.screen = pygame.display.set_mode( (self.width,self.height), pygame.RESIZABLE )
@@ -99,8 +100,10 @@ class PyGameFrontEnd:
         #label   = myfont.render( "Some text!", 1, self.textColour )
         #self.screen.blit( label, (100, 100))
 
+        windowRect  = pygame.Rect([0,0],[self.width,self.height])
+        pygame.draw.rect( self.screen, self.textBackgroundColour, windowRect, 0)
 
-        lines   = self.backEnd.GetLinesBetween(0,100)
+        lines   = self.backEnd.GetLinesBetween(self.frameBufferStart, self.frameBufferStart+100)
 
         lineNumber  = 0
         lineHeight  = self.fontSize
@@ -168,11 +171,15 @@ class PyGameFrontEnd:
         keys    = pygame.key.get_pressed()
         if keys[pygame.K_UP]:
             print('K_UP')
-            self.cursorY = self.cursorY - 1
+            #self.cursorY = self.cursorY - 1
+            self.frameBufferStart = self.frameBufferStart - 1
+            self.Display()
 
         if keys[pygame.K_DOWN]:
             print('K_DOWN')
-            self.cursorY = self.cursorY + 1
+            #self.cursorY = self.cursorY + 1
+            self.frameBufferStart = self.frameBufferStart + 1
+            self.Display()
             
         if keys[pygame.K_LEFT]:
             print('K_LEFT')

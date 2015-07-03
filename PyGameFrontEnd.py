@@ -103,7 +103,7 @@ class PyGameFrontEnd:
         windowRect  = pygame.Rect([0,0],[self.width,self.height])
         pygame.draw.rect( self.screen, self.textBackgroundColour, windowRect, 0)
 
-        lines   = self.backEnd.GetLinesBetween(self.frameBufferStart, self.frameBufferStart+100)
+        lines   = self.backEnd.GetLinesBetween(self.frameBufferStart, self.frameBufferStart+self.frameBufferHeight)
 
         lineNumber  = 0
         lineHeight  = self.fontSize
@@ -188,6 +188,18 @@ class PyGameFrontEnd:
         if keys[pygame.K_RIGHT]:
             print('K_RIGHT')
             self.cursorX = self.cursorX + 1
+            
+        if keys[pygame.K_PAGEUP]:
+            print('K_PAGEUP')
+            #self.cursorY = self.cursorY + 1
+            self.frameBufferStart = self.frameBufferStart - self.frameBufferHeight
+            self.Display()
+            
+        if keys[pygame.K_PAGEDOWN]:
+            print('K_PAGEDOWN')
+            #self.cursorY = self.cursorY + 1
+            self.frameBufferStart = self.frameBufferStart + self.frameBufferHeight
+            self.Display()
             
 
 

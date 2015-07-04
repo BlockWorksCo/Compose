@@ -133,6 +133,11 @@ class BackEnd:
         return self.offsetForLine[start:end]
 
 
+    def GetNumberOfLines( self ):
+        """
+        """
+        return len(self.offsetForLine)
+
 
     def LineEndingType(self):
         """

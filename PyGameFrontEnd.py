@@ -151,7 +151,9 @@ class PyGameFrontEnd:
         event           = pygame.event.poll()
         self.timestamp  = pygame.time.get_ticks()
 
-
+        #
+        #
+        #
         if event.type == pygame.QUIT: 
             pygame.display.quit()
 
@@ -160,6 +162,8 @@ class PyGameFrontEnd:
             width,height    = event.dict['size']
             self.width      = width
             self.height     = height
+            self.frameBufferWidth       = self.width / self.characterWidth
+            self.frameBufferHeight      = self.height / self.characterHeight            
             self.screen = pygame.display.set_mode( (self.width,self.height), pygame.RESIZABLE )
 
             self.Display()
@@ -167,7 +171,9 @@ class PyGameFrontEnd:
         elif event.type == pygame.NOEVENT:
             self.Idle()
 
-
+        #
+        #
+        #
         keys    = pygame.key.get_pressed()
         if keys[pygame.K_UP]:
             print('K_UP')
@@ -201,5 +207,26 @@ class PyGameFrontEnd:
             self.frameBufferStart = self.frameBufferStart + self.frameBufferHeight
             self.Display()
             
+        #
+        #
+        #
+        mousePosition    = pygame.mouse.get_pos()
+        mousePresses    = pygame.mouse.get_pressed()
+        if mousePresses[0] == True:
+            print('Button0 down '+str(mousePosition))
+
+            x,y     = mousePosition
+            if x > self.width - 100:
+                percentage  = (100.0/self.height) * y
+                numberOfLines   = self.backEnd.GetNumberOfLines()
+                self.frameBufferStart   = int((numberOfLines / 100.0) * percentage)
+                print('scroll to %f%%'%(percentage))
+                self.Display()
+
+        if mousePresses[1] == True:
+            print('Button1 down '+str(mousePosition))
+
+        if mousePresses[2] == True:
+            print('Button2 down '+str(mousePosition) )
 
 

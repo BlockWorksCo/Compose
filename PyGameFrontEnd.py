@@ -25,6 +25,7 @@ class PyGameFrontEnd:
         self.backEnd                = backEnd
         self.width                  = 1000
         self.height                 = 600
+        self.minimapBackgroundColour= (0x30,0x2a,0x25)
         self.textBackgroundColour   = (0x27,0x28,0x22)
         self.textColour             = (0xf8,0xf8,0xf2)
         #self.fontName              = "Comic Sans MS"
@@ -48,6 +49,8 @@ class PyGameFrontEnd:
         self.frameBuffer            = ' ' * self.frameBufferWidth * self.frameBufferHeight;
 
         self.screen = pygame.display.set_mode( (self.width,self.height), pygame.RESIZABLE )
+
+
 
         self.Display()
 
@@ -100,6 +103,11 @@ class PyGameFrontEnd:
         #label   = myfont.render( "Some text!", 1, self.textColour )
         #self.screen.blit( label, (100, 100))
 
+        self.minimap    = pygame.Surface( (100, self.height) )
+        windowRect      = pygame.Rect([0,0],[100,self.height])
+        pygame.draw.rect( self.minimap, self.minimapBackgroundColour, windowRect, 0)
+
+
         windowRect  = pygame.Rect([0,0],[self.width,self.height])
         pygame.draw.rect( self.screen, self.textBackgroundColour, windowRect, 0)
 
@@ -114,7 +122,10 @@ class PyGameFrontEnd:
 
             lineNumber  = lineNumber + 1
 
-        pygame.display.set_caption("NiceText :o)")
+
+        self.screen.blit( self.minimap, (self.width-100,0) )
+
+        pygame.display.set_caption("Compose!")
         pygame.display.flip()
 
 
@@ -152,7 +163,7 @@ class PyGameFrontEnd:
         self.timestamp  = pygame.time.get_ticks()
 
         #
-        #
+        # General events
         #
         if event.type == pygame.QUIT: 
             pygame.display.quit()
@@ -172,7 +183,7 @@ class PyGameFrontEnd:
             self.Idle()
 
         #
-        #
+        # Key events
         #
         keys    = pygame.key.get_pressed()
         if keys[pygame.K_UP]:
@@ -208,7 +219,7 @@ class PyGameFrontEnd:
             self.Display()
             
         #
-        #
+        # Mouse events
         #
         mousePosition    = pygame.mouse.get_pos()
         mousePresses    = pygame.mouse.get_pressed()

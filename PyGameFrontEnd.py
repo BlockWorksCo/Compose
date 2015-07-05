@@ -100,12 +100,21 @@ class PyGameFrontEnd:
     def Display( self ):
         """
         """
-        #label   = myfont.render( "Some text!", 1, self.textColour )
-        #self.screen.blit( label, (100, 100))
-
         self.minimap    = pygame.Surface( (100, self.height) )
         windowRect      = pygame.Rect([0,0],[100,self.height])
         pygame.draw.rect( self.minimap, self.minimapBackgroundColour, windowRect, 0)
+        pygame.draw.rect( self.minimap, (0,0,0), windowRect, 2)
+
+        numberOfLines   = self.backEnd.GetNumberOfLines()
+        if numberOfLines > 0:
+            percentagePosition      = (100.0/numberOfLines) * self.frameBufferStart
+            percentageHeight        = (100.0/numberOfLines) * self.frameBufferHeight
+            scrollHeight    = (self.height/100.0) * percentageHeight
+            if scrollHeight < 10:
+                scrollHeight = 10
+            scrollPos       = ((self.height/100) * percentagePosition)
+            windowRect      = pygame.Rect([0,scrollPos],[100,scrollHeight])
+            pygame.draw.rect( self.minimap, (255,255,255), windowRect, 2)
 
 
         windowRect  = pygame.Rect([0,0],[self.width,self.height])

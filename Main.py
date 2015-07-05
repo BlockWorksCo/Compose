@@ -136,7 +136,10 @@ class BackEnd:
     def GetNumberOfLines( self ):
         """
         """
-        return len(self.offsetForLine)
+        try:
+            return len(self.offsetForLine)
+        except AttributeError:
+            return 0
 
 
     def LineEndingType(self):

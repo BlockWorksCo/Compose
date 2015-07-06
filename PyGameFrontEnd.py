@@ -100,6 +100,10 @@ class PyGameFrontEnd:
     def Display( self ):
         """
         """
+
+        #
+        # Draw the minimap
+        #
         self.minimap    = pygame.Surface( (100, self.height) )
         windowRect      = pygame.Rect([0,0],[100,self.height])
         pygame.draw.rect( self.minimap, self.minimapBackgroundColour, windowRect, 0)
@@ -116,7 +120,16 @@ class PyGameFrontEnd:
             windowRect      = pygame.Rect([0,scrollPos],[100,scrollHeight])
             pygame.draw.rect( self.minimap, (255,255,255), windowRect, 2)
 
+        for minimapLineNumber in range(self.height):
+            fileLineNumber = (minimapLineNumber/self.height) * numberOfLines
+            lineLength      = self.backEnd.LengthOfLine( fileLineNumber )
+            minimapLineWidth    = (98/self.frameBufferWidth) * lineLength
+            pygame.draw.line( self.minimap, (255,255,255), (1,minimapLineNumber),(minimapLineWidth,minimapLineNumber), 1 )
 
+
+        #
+        # Draw the text.
+        #
         windowRect  = pygame.Rect([0,0],[self.width,self.height])
         pygame.draw.rect( self.screen, self.textBackgroundColour, windowRect, 0)
 
@@ -132,6 +145,9 @@ class PyGameFrontEnd:
             lineNumber  = lineNumber + 1
 
 
+        #
+        # Display everything on the window.
+        #
         self.screen.blit( self.minimap, (self.width-100,0) )
 
         pygame.display.set_caption("Compose!")

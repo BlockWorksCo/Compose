@@ -23,7 +23,7 @@ int main( int argc, char* argv[] )
     fileHandle  = open( argv[1], O_RDONLY );
     if( fileHandle != -1 )
     {
-        indexFileHandle  = open( argv[2], O_CREAT|O_RDWR, 0666 );
+        indexFileHandle  = open( argv[2], O_CREAT|O_RDWR|O_TRUNC, 0666 );
         if( indexFileHandle != -1 )
         {
             //

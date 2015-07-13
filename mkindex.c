@@ -29,12 +29,12 @@ int main( int argc, char* argv[] )
             //
             //
             //
-            #define BLOCK_SIZE                  (1024*1024)
-            ssize_t     offset                  = 0;
-            uint8_t     block[BLOCK_SIZE]       = {0};
-            uint32_t    lineOffsets[BLOCK_SIZE] = {0};
-            uint32_t    numberOfLineOffsets     = 0;
-            ssize_t     bytesRead               = 0;
+            #define BLOCK_SIZE                  (1024*128)
+            ssize_t             offset                  = 0;
+            static uint8_t      block[BLOCK_SIZE]       = {0};
+            static uint32_t     lineOffsets[BLOCK_SIZE] = {0};
+            uint32_t            numberOfLineOffsets     = 0;
+            ssize_t             bytesRead               = 0;
 
             //
             // Write line 0

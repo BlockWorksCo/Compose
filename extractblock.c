@@ -45,34 +45,21 @@ void CopyBlock( int destinationFd, int sourceFd, uint32_t blockSize)
 
 
 //
-// replaceblock inputFile outputFile fileToInsert replaceStart replaceEnd
+// extractblock inputFile outputFile extractStart extractEnd
 //
 int main( int argc, char* argv[] )
 {
     int         exitCode            = -1;
     int         inputFileHandle     = -1;
     int         outputFileHandle    = -1;
-    int         insertFileHandle    = 0;
-    uint32_t    replaceStart        = 0;
-    uint32_t    replaceEnd          = 0;
-    uint32_t    insertSize          = 0;
-    uint32_t    inputSize           = 0;
+    uint32_t    extractStart        = 0;
+    uint32_t    extractEnd          = 0;
 
     //
     //
     //
-    struct stat     fileData;
-    stat( argv[3], &fileData );
-    insertSize  = fileData.st_size;
-
-    stat( argv[1], &fileData );
-    inputSize  = fileData.st_size;
-
-    //
-    //
-    //
-    replaceStart    = atoi( argv[4] );
-    replaceEnd      = atoi( argv[5] );
+    extractStart    = atoi( argv[3] );
+    extractEnd      = atoi( argv[4] );
 
     //
     //
@@ -83,27 +70,13 @@ int main( int argc, char* argv[] )
         outputFileHandle  = open( argv[2], O_CREAT|O_RDWR|O_TRUNC, 0666 );
         if( outputFileHandle != -1 )
         {
-            insertFileHandle  = open( argv[3], O_RDONLY );
-            if( insertFileHandle != -1 )
-            {
-                printf("%d %d %d\n", replaceStart, replaceEnd, insertSize );
+            printf("%d %d\n", extractStart, extractEnd );
 
-                lseek( outputFileHandle, 0, SEEK_SET );
-                lseek( inputFileHandle,  0, SEEK_SET );
-                CopyBlock( outputFileHandle, inputFileHandle, replaceStart );
+            lseek( outputFileHandle, 0, SEEK_SET );
+            lseek( inputFileHandle,  extractStart, SEEK_SET );
+            CopyBlock( outputFileHandle, inputFileHandle, extractEnd-extractStart );
 
-                lseek( outputFileHandle,  replaceStart, SEEK_SET );
-                lseek( insertFileHandle,  0,            SEEK_SET );
-                CopyBlock( outputFileHandle, insertFileHandle, insertSize );
-
-                lseek( outputFileHandle, replaceStart+insertSize,   SEEK_SET );
-                lseek( inputFileHandle,  replaceEnd,                SEEK_SET );
-                CopyBlock( outputFileHandle, inputFileHandle, inputSize-replaceEnd );
-
-                exitCode    = 0;
-                close( insertFileHandle );
-            }
-
+            exitCode    = 0;
             close( outputFileHandle );
         }
 

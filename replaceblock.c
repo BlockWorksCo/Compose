@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <fcntl.h>
 
 
 
@@ -87,6 +88,8 @@ int main( int argc, char* argv[] )
             if( insertFileHandle != -1 )
             {
                 printf("%d %d %d\n", replaceStart, replaceEnd, insertSize );
+
+                posix_fallocate( outputFileHandle, 0, 0, inputSize+insertSize );
 
                 lseek( outputFileHandle, 0, SEEK_SET );
                 lseek( inputFileHandle,  0, SEEK_SET );

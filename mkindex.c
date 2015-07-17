@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
-
+#include <string.h>
 
 
 
@@ -51,13 +51,16 @@ int main( int argc, char* argv[] )
                 if(bytesRead > 0)
                 {
                     numberOfLineOffsets = 0;
-                    for(uint32_t i=0; i<bytesRead; i++)
+                    uint32_t i                   = 0;
+                    uint8_t*   result   = NULL;
+                    do
                     {
-                        if( block[i] == '\n' )
-                        {
-                            lineOffsets[numberOfLineOffsets++]  = offset+i+1;
-                        }
-                    }
+                        result  = memchr( &block[i], '\n', bytesRead-i);
+                        i   = result - &block[0];
+                        lineOffsets[numberOfLineOffsets++]  = offset+i+1;
+                        i++;
+
+                    } while(result != NULL);
 
                     write( indexFileHandle, &lineOffsets[0], sizeof(uint32_t)*numberOfLineOffsets );
                 }

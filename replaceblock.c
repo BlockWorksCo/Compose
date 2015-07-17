@@ -81,6 +81,7 @@ int main( int argc, char* argv[] )
     inputFileHandle  = open( argv[1], O_RDONLY );
     if( inputFileHandle != -1 )
     {
+        unlink( argv[2] );
         outputFileHandle  = open( argv[2], O_CREAT|O_RDWR|O_TRUNC, 0666 );
         if( outputFileHandle != -1 )
         {
